@@ -1,0 +1,46 @@
+install.packages("ape")
+install.packages("adegraphics")
+install.packages("devtools")
+install.packages("dotplot")
+install.packages("ggplot2")
+install.packages("phangorn")
+install.packages("treespace")
+
+if (!requireNamespace("BiocManager"))
+  install.packages("BiocManager")
+
+BiocManager::install("Biostrings")
+BiocManager::install("ggtree")
+BiocManager::install("treeio")
+BiocManager::install("msa")
+
+library(ggplot2)
+library(ggtree)
+
+#### Read the Newick data file using 'ape'
+
+phylo <- ape::read.tree ("ENOG4105K70.nwk.txt")
+
+#### Basic tree - using ggtree
+
+ggtree(phylo)
+
+#### - circular tree using ggtree
+
+ggtree(phylo, layout="circular")
+
+#### - Circular with labels
+
+ggtree(phylo, layout="circular") + geom_tiplab (color = "blue", size = 1)
+
+#### - Basic tree with names
+
+ggtree(phylo) + geom_tiplab (color = "blue", size = 2)
+
+#### Unrooted
+
+ggtree(phylo, layout = "unrooted")
+
+#### Try unrooted with clade group colour
+
+ggtree(phylo, layout = "unrooted") + geom_hilight_encircle (branch.length = 2, node = 3, fill = "steelblue")
