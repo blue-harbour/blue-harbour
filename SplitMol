@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Cwd;
+
+my $file="";
+my @ligands=();
+my $mol2="";
+my $workdir=getcwd;
+
+for my $i (0..@ARGV-1)
+{
+    if ($ARGV[$i] eq "-f") {++$i;$file = $ARGV[$i] ;}
+    if ($ARGV[$i] eq "-w") {++$i;$workdir .= $ARGV[$i] ; }
+}
+
+open IN, "$file";
+while (<IN>)
+{
+    my $line = $_;
+    chomp($line);
+    if ($line =~ m/@<TRIPOS>MOLECULE/ && $mol2 eq "")
+    {
+        $mol2.=$line."\n";
+    }
+    elsif ($line =~ m/@<TRIPOS>MOLECULE/ && $mol2 ne "" )
+    {
+        my $outfile.=pop(@ligands).".mol2";
+        open OUT, ">$outfile";
+        print OUT "$mol2";
+        close OUT;
+        $mol2=$line."\n";
+    }
+    else
+    {
+        if($line =~ m/ZINC/) {push(@ligands,$line);}
+        $mol2.=$line."\n";
+        chomp($line);
+    }
+}
+close IN;
+exit;
+
